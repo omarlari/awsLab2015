@@ -1,0 +1,186 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Parameters": {
+        "vpc": {
+            "Description": "VpcId",
+            "Type": "String",
+            "Default": "",
+            "ConstraintDescription": ""
+        },
+        "publicRouteTable": {
+            "Description": "VpcId",
+            "Type": "String",
+            "Default": "",
+            "ConstraintDescription": ""
+        },
+        "vpc": {
+            "Description": "VpcId",
+            "Type": "String",
+            "Default": "",
+            "ConstraintDescription": ""
+        }
+
+    },
+    "Resources": {
+
+        "jenkinsSubnetAzA": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-west-2a",
+                "VpcId": {
+                     "Ref": "vpc"
+                },
+                "CidrBlock": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "10.",
+                            {
+                                "Ref": "secondOctet"
+                            },
+                            ".254",
+                            ".0",
+                            "/24"
+                        ]
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": 
+                        {
+                            "Ref": "AWS::StackName"
+                        }
+                    }
+                ]
+            }
+        }, 
+
+        "jenkinsRouteTableAssociation001": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "jenkinsSubnetAzA"
+                },
+                "RouteTableId": {
+                    "Ref": "publicRouteTable"
+                }
+            }
+        },
+
+        "jenkinsSubnetAzB": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-west-2b",
+                "VpcId": {
+                     "Ref": "vpc"
+                },
+                "CidrBlock": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "10.",
+                            {
+                                "Ref": "secondOctet"
+                            },
+                            ".254",
+                            ".0",
+                            "/24"
+                        ]
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": 
+                        {
+                            "Ref": "AWS::StackName"
+                        }
+                    }
+                ]
+            }
+        }, 
+
+        "jenkinsRouteTableAssociation002": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "jenkinsSubnetAzB"
+                },
+                "RouteTableId": {
+                    "Ref": "publicRouteTable"
+                }
+            }
+        },
+
+        "jenkinsSubnetAzC": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-west-2c",
+                "VpcId": {
+                     "Ref": "vpc"
+                },
+                "CidrBlock": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "10.",
+                            {
+                                "Ref": "secondOctet"
+                            },
+                            ".254",
+                            ".0",
+                            "/24"
+                        ]
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": 
+                        {
+                            "Ref": "AWS::StackName"
+                        }
+                    }
+                ]
+            }
+        }, 
+
+        "jenkinsRouteTableAssociation001": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "jenkinsSubnetAzC"
+                },
+                "RouteTableId": {
+                    "Ref": "publicRouteTable"
+                }
+            }
+        }
+
+    },
+    "Outputs": {
+        
+        "jenkinsSubnetAzA": {
+            "Value": {
+                "Ref": "jenkinsSubnetAzA"
+            },
+            "Description": "Jenkins Subnet AzA"
+        },
+
+        "jenkinsSubnetAzB": {
+            "Value": {
+                "Ref": "jenkinsSubnetAzB"
+            },
+            "Description": "Jenkins Subnet AzB"
+        },
+
+        "jenkinsSubnetAzC": {
+            "Value": {
+                "Ref": "jenkinsSubnetAzC"
+            },
+            "Description": "Jenkins Subnet AzC"
+        },
+    }
+}
