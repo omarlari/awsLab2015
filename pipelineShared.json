@@ -9,7 +9,7 @@
             "ConstraintDescription": ""
         },
         "publicRouteTable": {
-            "Description": "VpcId",
+            "Description": "Public Route Table",
             "Type": "String",
             "Default": "",
             "ConstraintDescription": ""
@@ -30,7 +30,7 @@
     },
     "Resources": {
 
-        "jenkinsSubnetAzA": {
+        "pipelineSubnetAzA": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "AvailabilityZone": "us-west-2a",
@@ -63,11 +63,11 @@
             }
         }, 
 
-        "jenkinsRouteTableAssociation001": {
+        "pipelineRouteTableAssociation001": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {
                 "SubnetId": {
-                    "Ref": "jenkinsSubnetAzA"
+                    "Ref": "pipelineSubnetAzA"
                 },
                 "RouteTableId": {
                     "Ref": "publicRouteTable"
@@ -75,7 +75,7 @@
             }
         },
 
-        "jenkinsSubnetAzB": {
+        "pipelineSubnetAzB": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "AvailabilityZone": "us-west-2b",
@@ -108,11 +108,11 @@
             }
         }, 
 
-        "jenkinsRouteTableAssociation002": {
+        "pipelineRouteTableAssociation002": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {
                 "SubnetId": {
-                    "Ref": "jenkinsSubnetAzB"
+                    "Ref": "pipelineSubnetAzB"
                 },
                 "RouteTableId": {
                     "Ref": "publicRouteTable"
@@ -120,7 +120,7 @@
             }
         },
 
-        "jenkinsSubnetAzC": {
+        "pipelineSubnetAzC": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "AvailabilityZone": "us-west-2c",
@@ -153,40 +153,85 @@
             }
         }, 
 
-        "jenkinsRouteTableAssociation001": {
+        "pipelineRouteTableAssociation003": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {
                 "SubnetId": {
-                    "Ref": "jenkinsSubnetAzC"
+                    "Ref": "pipelineSubnetAzC"
                 },
                 "RouteTableId": {
                     "Ref": "publicRouteTable"
                 }
+            }
+        },
+
+        "pipelineSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "SG for Zabbix",
+                "VpcId": {
+                    "Ref": "vpc"
+                },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "22",
+                        "ToPort": "22"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "80",
+                        "ToPort": "80"
+                    }
+                ]
+            }
+        },
+
+        "pipelineS3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": "awslab-pipelinebackup"
             }
         }
 
     },
     "Outputs": {
         
-        "jenkinsSubnetAzA": {
+        "pipelineSubnetAzA": {
             "Value": {
-                "Ref": "jenkinsSubnetAzA"
+                "Ref": "pipelineSubnetAzA"
             },
-            "Description": "Jenkins Subnet AzA"
+            "Description": "pipeline Subnet AzA"
         },
 
-        "jenkinsSubnetAzB": {
+        "pipelineSubnetAzB": {
             "Value": {
-                "Ref": "jenkinsSubnetAzB"
+                "Ref": "pipelineSubnetAzB"
             },
-            "Description": "Jenkins Subnet AzB"
+            "Description": "pipeline Subnet AzB"
         },
 
-        "jenkinsSubnetAzC": {
+        "pipelineSubnetAzC": {
             "Value": {
-                "Ref": "jenkinsSubnetAzC"
+                "Ref": "pipelineSubnetAzC"
             },
-            "Description": "Jenkins Subnet AzC"
+            "Description": "pipeline Subnet AzC"
+        },
+
+        "pipelineSecurityGroup": {
+            "Value": {
+                "Ref": "pipelineSecurityGroup"
+            },
+            "Description": "pipelineSecurityGroup"
+        },
+
+        "pipelineS3Bucket": {
+            "Value": {
+                "Ref": "pipelineS3Bucket"
+            },
+            "Description": "pipelineS3Bucket"
         }
     }
 }

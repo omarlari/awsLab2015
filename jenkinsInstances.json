@@ -1,0 +1,75 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "ASG for launching group",
+    "Parameters": {
+        "ImageId": {
+            "Description": "Ami ID",
+            "Type": "String",
+            "Default": "ami-2be2b51b"
+        },
+
+        "InstanceType": {
+            "Description": "Instance size you would like to deploy",
+            "Type": "String",
+            "Default": "m1.large"
+        },
+
+        "NumberOfInstances": {
+            "Description": "Number of desired Instances",
+            "Type": "Number",
+            "Default": 2
+        },
+
+        "SubnetAzA": {
+            "Description": "Subnet to deploy",
+            "Type": "String",
+            "Default": ""
+        },
+
+        "SubnetAzB": {
+            "Description": "Subnet to deploy",
+            "Type": "String",
+            "Default": ""
+        },
+
+        "SecurityGroup": {
+            "Description": "Security group where you would like to deploy",
+            "Type": "String",
+            "Default": ""
+        }
+
+    },
+    "Resources": {
+        "ASG" : {
+            "Type" : "AWS::AutoScaling::AutoScalingGroup",
+            "Properties" : {
+                "AvailabilityZones" : [ "us-west-2a", "us-west-2b"],
+                "VPCZoneIdentifier" : [ { "Ref" : "SubnetAzA" }, {"Ref" : "SubnetAzB"} ],
+                "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+                "MinSize" : "1",
+                "MaxSize" : "10",
+                "DesiredCapacity" : { "Ref" : "NumberOfInstances" }
+            }
+        },
+
+        "LaunchConfig" : {
+            "Type": "AWS::AutoScaling::LaunchConfiguration",
+            "Properties": {
+                "AssociatePublicIpAddress": "True",
+                "ImageId" : { "Ref" : "ImageId" },
+                "InstanceType" : { "Ref" : "InstanceType" },
+                "KeyName": "docker",
+                "SecurityGroups" : [
+                    {"Ref": "SecurityGroup"}
+                ]
+            }
+        }
+    },
+
+    "Outputs": {
+        "ASG" : {
+            "Description" : "ASG ID of the newly created ASG",
+            "Value" :  { "Ref" : "ASG" }
+        }
+    }
+}
